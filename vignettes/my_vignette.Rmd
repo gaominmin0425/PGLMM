@@ -20,12 +20,14 @@ library(tidyverse)
 # Load data
 tortoise <- read.csv("~/Desktop/Asc/PGLMM/R/gopher_tortoise.csv")
 
-#histgram 
+#histogram 
 #data of intercept
 p1 <- gopher %>% filter(term == "(Intercept)")%>%select("estimate") %>%
   ggplot(aes(x=estimate,y=..density..))+ 
   geom_histogram(bindwidth=30)+
-  geom_density()
+  geom_density()+
+  ggtitle("histogram of intercept")+
+  geom_vline(xintercept = tortoise_fit$beta[1], colour="green")
 p1
 ```
 
@@ -34,8 +36,10 @@ p1
 #data of prev
 p2 <- gopher %>% filter(term == "prev")%>%select("estimate") %>%
   ggplot(aes(x = estimate,y=..density..)) +
-  geom_histogram(bindwidth=10)+
-  geom_density()
+  geom_histogram(bindwidth=30)+
+  geom_density()+
+  ggtitle("histogram of prev")+
+  geom_vline(xintercept = tortoise_fit$beta[2], colour="green")
 p2
 ```
 
@@ -44,8 +48,10 @@ p2
 #data of factor(year)2005
 p3 <- gopher %>% filter(term == "factor(year)2005")%>%select("estimate") %>%
   ggplot(aes(x = estimate,y=..density..)) +
-  geom_histogram(bindwidth=10)+
-  geom_density()
+  geom_histogram(bindwidth=30)+
+  geom_density()+
+  ggtitle("histogram of factor(year)2005")+
+  geom_vline(xintercept = tortoise_fit$beta[3], colour="green")
 p3
 ```
 
@@ -55,7 +61,9 @@ p3
 p4 <- gopher %>% filter(term == "factor(year)2006")%>%select("estimate") %>%
   ggplot(aes(x = estimate,y=..density..)) +
   geom_histogram(bindwidth=30)+
-  geom_density()
+  geom_density()+
+  ggtitle("histogram of factor(year)2006")+
+  geom_vline(xintercept = tortoise_fit$beta[4], colour="green")
 p4
 ```
 
@@ -64,8 +72,10 @@ p4
 #data of sd__(Intercept)
 p5 <- gopher %>% filter(term == "sd__(Intercept)")%>%select("estimate") %>%
   ggplot(aes(x = estimate,y=..density..)) +
-  geom_histogram(bindwidth=10)+
-  geom_density()
+  geom_histogram(bindwidth=30)+
+  geom_density()+
+  ggtitle("histogram of sd__(Intercept)")+
+  geom_vline(xintercept =tortoise_fit$sigmasq, colour="green")
 p5
 ```
 ```{r}
@@ -115,19 +125,54 @@ b4
 ```
 
 
-```{r}
-b5 <- gopher %>% filter(term == "sd__(Intercept)")%>%select("estimate") %>%
-  ggplot(aes(x = estimate)) +
-  geom_boxplot()+
-  xlab("sd__(Intercept)")+
-  ylab("number of shells")
-b5
-```
+
 ```{r}
 library(patchwork)
-(b1+b2+b3)/(b4+b5)
+b1+b2+b3+b4
 ```
 
 
+```{r}
+q1<- gopher %>% filter(term == "(Intercept)")%>%select("estimate") %>%
+  ggplot(aes(sample=estimate)) +
+  geom_qq() +
+  geom_qq_line()+
+  labs(title="QQ plot of intercept")
+q1
+```
 
+
+```{r}
+q2 <- gopher %>% filter(term == "prev")%>%select("estimate") %>%
+  ggplot(aes(sample=estimate)) +
+  geom_qq() +
+  geom_qq_line()+
+  labs(title="QQ plot of prev")
+q2
+```
+
+
+```{r}
+q3 <- gopher %>% filter(term == "factor(year)2005")%>%select("estimate") %>%
+  ggplot(aes(sample=estimate)) +
+  geom_qq() +
+  geom_qq_line()+
+  labs(title=" QQ plot of factor(year)2005")
+q3
+```
+
+```{r}
+q4<- gopher %>% filter(term == "factor(year)2006")%>%select("estimate") %>%
+  ggplot(aes(sample=estimate)) +
+  geom_qq() +
+  geom_qq_line()+
+  labs(title=" QQ plot of factor(year)2006")
+q4
+```
+
+
+```{r}
+library(patchwork)
+q1+q2+q3+q4
+```
 
