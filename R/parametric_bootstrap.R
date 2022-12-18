@@ -19,6 +19,8 @@ para_bootstrap <- function(B, Dataset){
   Dataset_new = Dataset1 %>% mutate(mu_i_hat = mu_i_hat) %>% crossing(B=1:B) %>% mutate(Y_hat = rpois(n(), mu_i_hat))
   Bootstrap1 = Dataset_new %>% group_by(B) %>% summarise(tidy(glmer(Y_hat~prev + offset(log(Area))+factor(year)+(1|Site),
                                                                     family = poisson)), .groups = "drop")
+
   return(Bootstrap1)
 }
+
 
