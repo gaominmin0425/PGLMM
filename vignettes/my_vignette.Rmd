@@ -15,5 +15,41 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(PGLMM)
+#library(PGLMM)
+library(tidyverse)
+# Load data
+tortoise <- read.csv(here("gopher_tortoise.csv"))
+
+#histrogram 
+plot_year <- tortoise %>%
+  mutate(z = as.factor(year)) %>%
+  ggplot(aes(x = prev,y=shells)) +
+  geom_histogram((aes(fill = z)),binwidth=3)+
+  geom_density(color = "red", size = 1)
+#plot_year
+
+
+plot_site <- tortoise %>%
+  mutate(z = as.factor(year)) %>%
+  ggplot(aes(x = Site,y=shells)) +
+  geom_histogram((aes(fill = z)),binwidth=10)+
+  geom_density(alpha=0.6)
+#plot_site
 ```
+
+
+```{r}
+library(ggplot2)
+# boxplot
+box_year <- ggplot(tortoise, aes(x=as.factor(year), y=shells)) + 
+  geom_boxplot()+
+  xlab("Year")+
+  ylab("number of shells")
+```
+
+
+
+
+
+
+
