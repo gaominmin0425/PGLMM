@@ -6,6 +6,7 @@ Authors@R:
     person("Jingyi", "Liu", , "serenaliu0721@gmail.com", role = c("aut", "cre"))
 Description: This package is about fitting Generalized Linear Mixed Models where response is Poisson distribution. This package includes functions s to implement maximum likelihood inference including computingpoint estimates, standard errors, and confidence intervals. In the Estimation function, the return results are cefficients of the predictors.And also, computing the sigma square for random effects since the random effects are iid normal distribution. On the other hand, the coefficients that gotten from estimation function and gotten many estimation of coefficients from  bootstrap. In bootstrap function, we can obtain many MLE using Estimation function to compute the sandard error and confidence interval. Finally, we test our functions using "gopher_tortoise" data set.
 License: GPL (>= 3)
+Imports: dplyr, stats, base, broom.mixed, tibble, lme4
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
@@ -18,3 +19,6 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
+Depdens:
+    R (>= 2.10)
+LazyData: true
