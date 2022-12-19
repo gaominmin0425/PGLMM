@@ -45,7 +45,7 @@ library(patchwork)
 s1+s2
 ```
 1. There is a positive relationship between parameter prev and response shells. As prev increases, the number of shell will also increases. 
-2.it seems there is no clear relatioonship between the parameter year and response shells.
+2.It seems there is no clear relatioonship between the parameter year and response shells.
 
 
 ```{r}
@@ -58,8 +58,8 @@ h1<- tortoise %>%
 
 h1
 ```
-1. there is a decreasing density curve for prev.
-2. the distribution is skewed too the right and unimodal. 
+1. There is a decreasing density curve for prev.
+2. The distribution is skewed to the right and unimodal. 
 
 ```{r}
 #boxplot of year
@@ -80,10 +80,10 @@ b1+b2
 ```
 For parameter year
 1. year 2004 has a more dispersed the data than year 2005 and 2006.
-2. they have same median.Buit,the median is the upper quantile for year 2005. the median is the lower quantile for year 2006.
-3. the boxplot of year 2004 is skewed right. 
+2. They have same median.Buit,the median is the upper quantile for year 2005. The median is the lower quantile for year 2006.
+3. The boxplot of year 2004 is skewed right. 
 For parameter prev
-1. the boxplot of prev is skewed right. the median is closer to the lower quantitle. 
+1. The boxplot of prev is skewed right. the median is closer to the lower quantitle. 
 
 
 
@@ -93,7 +93,6 @@ For parameter prev
 ## return for bootstrap
 Gopher = para_bootstrap(100,tortoise, tortoise_fit$beta[2])
 ## For plots
-tortoise <- read.csv("~/Desktop/Asc/PGLMM/R/gopher_tortoise.csv")
 tortoise = tortoise %>% mutate(Year2005 = ifelse(tortoise$year == "2005",1,0), Year2006 = ifelse(tortoise$year=="2006", 1,0))
 tortoise_fit <- run_model(tortoise, "tortoise")
 Sigmasq = tortoise_fit$sigmasq
