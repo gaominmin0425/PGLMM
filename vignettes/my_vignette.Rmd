@@ -14,14 +14,18 @@ knitr::opts_chunk$set(
 )
 ```
 
-
 ```{r}
 #library(PGLMM)
 library(tidyverse)
 library(ggplot2)
 # Load data
 tortoise <- read.csv("~/Desktop/Asc/PGLMM/R/gopher_tortoise.csv")
+#summary the datatset
+summary(tortoise)
+```
 
+
+```{r}
 # scatter Plot: relationship between shells and prev
 s1 <- tortoise %>%
   ggplot(aes(x = prev,y=shells)) +
@@ -64,21 +68,22 @@ b1 <- ggplot(tortoise, aes(as.factor(year), y=shells,color=year)) +
   xlab("Year")+
   ylab("number of shells")+
   ggtitle("Boxplot of year")#add title
-b1
 
 b2 <- ggplot(tortoise, aes(x=prev, y=shells,group=2)) + 
   geom_boxplot()+
   xlab("prev")+
   ylab("number of shells")+
   ggtitle("Boxplot of year")#add title
-b2
+#put two plots togther
+library(patchwork)
+b1+b2
 ```
-for pamater year
+For parameter year
 1. year 2004 has a more dispersed the data than year 2005 and 2006.
-2. they have same median.the median is the upper quantile for year 2005. the median is the lower quantile for year 2006.
+2. they have same median.Buit,the median is the upper quantile for year 2005. the median is the lower quantile for year 2006.
 3. the boxplot of year 2004 is skewed right. 
-for pamater prev
-1. the boxplot of prev is skewed right. 
+For parameter prev
+1. the boxplot of prev is skewed right. the median is closer to the lower quantitle. 
 
 
 
