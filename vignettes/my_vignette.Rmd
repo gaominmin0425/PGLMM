@@ -137,20 +137,18 @@ p2 <- Gopher %>% filter(term == "prev")%>%select("estimate") %>%
   geom_density()+    #add density curve
   ggtitle("histogram of prev")+
   geom_vline(xintercept = tortoise_fit$beta[2], colour="green") #true mean
-p2
 
 q2 <- Gopher %>% filter(term == "prev")%>%select("estimate") %>%
   ggplot(aes(sample=estimate)) +
   geom_qq() +
   geom_qq_line()+
   labs(title="QQ plot of prev")
-q2
 ```
 Histogram with density function,and true mean 
 1. parameter normality holds.
-2. the true mean(green line) is approximate at the center.
+2. the true mean(green line) is approximate at the center（right a litlle bit).
 QQ plot
-1. parameter normality holds since most of the data are around the line patter even there are some outliers.
+1. parameter normality holds since most of the data are around the line patter even there are two outliers.
 
 ```{r}
 #put two plots togther
@@ -166,14 +164,12 @@ p3 <- Gopher %>% filter(term == "factor(year)2005")%>%select("estimate") %>%
   geom_density()+     #add density curve
   ggtitle("histogram of factor(year)2005")+
   geom_vline(xintercept = tortoise_fit$beta[3], colour="green")  #true mean
-p3
 
 q3 <- Gopher %>% filter(term == "factor(year)2005")%>%select("estimate") %>%
   ggplot(aes(sample=estimate)) +
   geom_qq() +
   geom_qq_line()+
   labs(title=" QQ plot of factor(year)2005")
-q3
 ```
 Histogram with density function,and true mean 
 1. parameter normality holds.
@@ -197,21 +193,18 @@ p4 <- Gopher %>% filter(term == "factor(year)2006")%>%select("estimate") %>%
   geom_density()+     #add density curve
   ggtitle("histogram of factor(year)2006")+
   geom_vline(xintercept = tortoise_fit$beta[4], colour="green")  #true mean
-p4
 
 q4<- Gopher %>% filter(term == "factor(year)2006")%>%select("estimate") %>%
   ggplot(aes(sample=estimate)) +
   geom_qq() +
   geom_qq_line()+
   labs(title=" QQ plot of factor(year)2006")
-q4
 ```
 Histogram with density function,and true mean 
 1. parameter normality holds.
-2. the true mean(green line) is approximate at the center.
-
+2. the true mean(green line) is approximate at the center(left a little bit).
 QQ plot
-1. parameter normality holds since most of the data are around the line patter even there are some outliers.
+1. parameter normality holds since most of the data are around the line patter.
 
 ```{r}
 #put two plots togther
@@ -229,13 +222,11 @@ p5 <- Gopher %>% filter(term == "sd__(Intercept)")%>%select("estimate") %>%
   geom_density()+  #add density curve
   ggtitle("histogram of sd__(Intercept)")+
   geom_vline(xintercept =tortoise_fit$sigmasq, colour="green")   #true mean
-p5
 q5<- Gopher %>% filter(term == "sd__(Intercept)")%>%select("estimate") %>%
   ggplot(aes(sample=estimate)) +
   geom_qq() +
   geom_qq_line()+
   labs(title=" QQ plot of sd__(Intercept)")
-q5
 ```
 Histogram with density function and qq plot
 1. sigmasq is 0. 
