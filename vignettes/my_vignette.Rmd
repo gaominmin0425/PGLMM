@@ -19,11 +19,20 @@ knitr::opts_chunk$set(
 #library(PGLMM)
 library(tidyverse)
 # Load data
+## return for bootstrap
+Gopher = para_bootstrap(100,tortoise, tortoise_fit$beta[2])
+## For plots
 tortoise <- read.csv("~/Desktop/Asc/PGLMM/R/gopher_tortoise.csv")
+tortoise = tortoise %>% mutate(Year2005 = ifelse(tortoise$year == "2005",1,0), Year2006 = ifelse(tortoise$year=="2006", 1,0))
+tortoise_fit <- run_model(tortoise, "tortoise")
+Sigmasq = tortoise_fit$sigmasq
+## compute bootstrap standard error and confidence interval in terms of prev
+Gopher %>% filter(term == "prev") %>% summarize(SD = sd(estimate),Lower95 = quantile(estimate, .025),Upper95 = quantile(estimate,.975))
+
 
 #histogram 
 #data of intercept
-p1 <- gopher %>% filter(term == "(Intercept)")%>%select("estimate") %>%
+p1 <- Gopher %>% filter(term == "(Intercept)")%>%select("estimate") %>%
   ggplot(aes(x=estimate,y=..density..))+ 
   geom_histogram(bindwidth=30)+
   geom_density()+    #add density curve
@@ -31,7 +40,7 @@ p1 <- gopher %>% filter(term == "(Intercept)")%>%select("estimate") %>%
   geom_vline(xintercept = tortoise_fit$beta[1], colour="green")  #true mean
 p1
 library(ggplot2)
-q1<- gopher %>% filter(term == "(Intercept)")%>%select("estimate") %>%
+q1<- Gopher %>% filter(term == "(Intercept)")%>%select("estimate") %>%
   ggplot(aes(sample=estimate)) +
   geom_qq() +
   geom_qq_line()+
@@ -52,7 +61,7 @@ p1+q1
 
 ```{r}
 #data of prev
-p2 <- gopher %>% filter(term == "prev")%>%select("estimate") %>%
+p2 <- Gopher %>% filter(term == "prev")%>%select("estimate") %>%
   ggplot(aes(x = estimate,y=..density..)) +
   geom_histogram(bindwidth=30)+
   geom_density()+    #add density curve
@@ -60,7 +69,7 @@ p2 <- gopher %>% filter(term == "prev")%>%select("estimate") %>%
   geom_vline(xintercept = tortoise_fit$beta[2], colour="green") #true mean
 p2
 
-q2 <- gopher %>% filter(term == "prev")%>%select("estimate") %>%
+q2 <- Gopher %>% filter(term == "prev")%>%select("estimate") %>%
   ggplot(aes(sample=estimate)) +
   geom_qq() +
   geom_qq_line()+
@@ -81,7 +90,7 @@ p2+q2
 
 ```{r}
 #data of factor(year)2005
-p3 <- gopher %>% filter(term == "factor(year)2005")%>%select("estimate") %>%
+p3 <- Gopher %>% filter(term == "factor(year)2005")%>%select("estimate") %>%
   ggplot(aes(x = estimate,y=..density..)) +
   geom_histogram(bindwidth=30)+
   geom_density()+     #add density curve
@@ -89,7 +98,7 @@ p3 <- gopher %>% filter(term == "factor(year)2005")%>%select("estimate") %>%
   geom_vline(xintercept = tortoise_fit$beta[3], colour="green")  #true mean
 p3
 
-q3 <- gopher %>% filter(term == "factor(year)2005")%>%select("estimate") %>%
+q3 <- Gopher %>% filter(term == "factor(year)2005")%>%select("estimate") %>%
   ggplot(aes(sample=estimate)) +
   geom_qq() +
   geom_qq_line()+
@@ -112,7 +121,7 @@ p3+q3
 
 ```{r}
 #data of factor(year)2006
-p4 <- gopher %>% filter(term == "factor(year)2006")%>%select("estimate") %>%
+p4 <- Gopher %>% filter(term == "factor(year)2006")%>%select("estimate") %>%
   ggplot(aes(x = estimate,y=..density..)) +
   geom_histogram(bindwidth=30)+
   geom_density()+     #add density curve
@@ -120,7 +129,7 @@ p4 <- gopher %>% filter(term == "factor(year)2006")%>%select("estimate") %>%
   geom_vline(xintercept = tortoise_fit$beta[4], colour="green")  #true mean
 p4
 
-q4<- gopher %>% filter(term == "factor(year)2006")%>%select("estimate") %>%
+q4<- Gopher %>% filter(term == "factor(year)2006")%>%select("estimate") %>%
   ggplot(aes(sample=estimate)) +
   geom_qq() +
   geom_qq_line()+
@@ -144,14 +153,14 @@ p4+q4
 
 ```{r}
 #data of sd__(Intercept)
-p5 <- gopher %>% filter(term == "sd__(Intercept)")%>%select("estimate") %>%
+p5 <- Gopher %>% filter(term == "sd__(Intercept)")%>%select("estimate") %>%
   ggplot(aes(x = estimate,y=..density..)) +
   geom_histogram(bindwidth=30)+
   geom_density()+  #add density curve
   ggtitle("histogram of sd__(Intercept)")+
   geom_vline(xintercept =tortoise_fit$sigmasq, colour="green")   #true mean
 p5
-q5<- gopher %>% filter(term == "sd__(Intercept)")%>%select("estimate") %>%
+q5<- Gopher %>% filter(term == "sd__(Intercept)")%>%select("estimate") %>%
   ggplot(aes(sample=estimate)) +
   geom_qq() +
   geom_qq_line()+
@@ -168,9 +177,6 @@ p5+q5
 ```
 
 
-```{r}
-
-```
 
 
 
