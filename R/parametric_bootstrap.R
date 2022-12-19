@@ -1,5 +1,6 @@
 library(broom.mixed)
 library(tidyverse)
+
 para_bootstrap <- function(B, Dataset, para){
   ## we first re-sample the random effect Z_i
   n = nrow(Dataset)

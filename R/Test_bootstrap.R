@@ -1,5 +1,5 @@
-source("parametric_bootstrap.R")
-source("gopher_tortoise.R")
+#source("parametric_bootstrap.R")
+#source("gopher_tortoise.R")
 ## return for bootstrap
 Gopher = para_bootstrap(100,tortoise, tortoise_fit$beta[2])
 ## For plots
@@ -8,5 +8,5 @@ tortoise = tortoise %>% mutate(Year2005 = ifelse(tortoise$year == "2005",1,0), Y
 tortoise_fit <- run_model(tortoise, "tortoise")
 Sigmasq = tortoise_fit$sigmasq
 ## compute bootstrap standard error and confidence interval in terms of prev
-gopher %>% filter(term == "prev") %>% summarize(SD = sd(estimate),Lower95 = quantile(estimate, .025),Upper95 = quantile(estimate,.975))
+Gopher %>% filter(term == "prev") %>% summarize(SD = sd(estimate),Lower95 = quantile(estimate, .025),Upper95 = quantile(estimate,.975))
 
