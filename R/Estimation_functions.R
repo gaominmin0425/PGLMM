@@ -5,7 +5,9 @@
 #'
 #' @return A list with summary statistics from the fitted model.
 #' @export
-#'
+#'@importFrom dplyr group_by mutate summarize filter slice %>%
+#'  @importFrom tibble tibble
+#'  @importFrom  lme4 glmer lmer
 #' @examples
 #' ##### Epilepsy #####
 #'
@@ -13,7 +15,7 @@
 #' epilepsy <- read_csv("epilepsy.csv")
 #'
 #' ## Sum separate observations for each patient in the after period
-#' epilepsy <- epilepsy %>%
+#' epilepsy <- epilepsy %>
 #'   group_by(id,treat,expind,age) %>%
 #'   summarize(seizures = sum(seizures),
 #'             .groups = "drop")
