@@ -15,15 +15,105 @@ knitr::opts_chunk$set(
 ```
 
 
+# Introduction
+The functions in this package provides methods to determine the relationship between predictor and response in GLMM, where the the distribution of the response variable is Possion distribution. The parapmeter in the Poisson distribution, $\mu_{i}$, is an invertible function of the linear predictor. This is called the link function. Besides, the linear predictor is a linear combination of fixed effects and random effects, which is the latten variables. The basic idea of this projet is implementing maximum likelihood function containing computing the point estimates, standard errors, and confidence intervals. Therefore, in order to figure out the relationship between the response and predictors, two basic algorithm functions will be computed in this R package, which are Estimation_functions and para_bootstrap. Each functions requie different arguments:
+  Estimation_functions:
+- `data` -- the data set for my own sample. In this project, the data set is "gopher_tortoise" which follows Poisson distribution
+- `example` -- example the name of my own example, which is "tortoise". "tortoise" is the name of data set in coding.
+
+The function returns a list of summary statstics in fitted model such as coefficients, sigma square, test statistics, and also convergence.
+
+  para_bootstrap:
+- `B` -- B is the iteration of generating reponse data like $Y_{ij}$ in Possion GLMM.
+- `Dataset` -- Data set for my own example, which is "tortoise"
+- `para` -- representing the value of coefficient of the specific predictor that interested in the project. In "tortoise" data set, the interested predictor is "prev". There are two options for para: one is tortoise_fit$beta[2] for coefficient of "prev", another is 0 for hypothesis test.
+
+This function returns bootstrap, including the estimator of $\beta_$, statistic, standard error, and p-value.
+
+To use the package we need to load it into our `R` session. The examples in this vignette also use functions from the `tidyverse` package, and also `broom.mixed` package, though this is not necessary for general use of our package.
+
+
+
 
 ```{r}
 #library(PGLMM)
 library(tidyverse)
+library(ggplot2)
+# Load data
+tortoise <- read.csv("~/Desktop/Asc/PGLMM/R/gopher_tortoise.csv")
+#summary the datatset
+summary(tortoise)
+```
+
+
+```{r}
+# scatter Plot: relationship between shells and prev
+s1 <- tortoise %>%
+  ggplot(aes(x = prev,y=shells)) +
+  geom_point()+
+  geom_smooth(method=lm)
+# scatter Plot: relationship between shells and year
+s2 <- tortoise %>%
+  ggplot(aes(x = year,y=shells)) +
+  geom_point()+
+  geom_smooth(method=lm)
+
+```
+
+```{r}
+#put two plots togther
+library(patchwork)
+s1+s2
+```
+1. There is a positive relationship between parameter prev and response shells. As prev increases, the number of shell will also increases. 
+2.It seems there is no clear relatioonship between the parameter year and response shells.
+
+
+```{r}
+#histogram of prev
+h1<- tortoise %>%
+  ggplot(aes(x = prev,y = ..density..)) +
+  geom_histogram(binwidth = 10) + 
+  geom_density()+#add density curve
+  ggtitle("histogram of prev")#add title
+
+h1
+```
+1. There is a decreasing density curve for prev.
+2. The distribution is skewed to the right and unimodal. 
+
+```{r}
+#boxplot of year
+b1 <- ggplot(tortoise, aes(as.factor(year), y=shells,color=year)) + 
+  geom_boxplot()+
+  xlab("Year")+
+  ylab("number of shells")+
+  ggtitle("Boxplot of year")#add title
+
+b2 <- ggplot(tortoise, aes(x=prev, y=shells,group=2)) + 
+  geom_boxplot()+
+  xlab("prev")+
+  ylab("number of shells")+
+  ggtitle("Boxplot of year")#add title
+#put two plots togther
+library(patchwork)
+b1+b2
+```
+For parameter year
+1. year 2004 has a more dispersed the data than year 2005 and 2006.
+2. They have same median.Buit,the median is the upper quantile for year 2005. The median is the lower quantile for year 2006.
+3. The boxplot of year 2004 is skewed right. 
+For parameter prev
+1. The boxplot of prev is skewed right. the median is closer to the lower quantitle. 
+
+
+
+```{r}
+#plot of estimation from bootsrap function
 # Load data
 ## return for bootstrap
 Gopher = para_bootstrap(100,tortoise, tortoise_fit$beta[2])
 ## For plots
-tortoise <- read.csv("~/Desktop/Asc/PGLMM/R/gopher_tortoise.csv")
 tortoise = tortoise %>% mutate(Year2005 = ifelse(tortoise$year == "2005",1,0), Year2006 = ifelse(tortoise$year=="2006", 1,0))
 tortoise_fit <- run_model(tortoise, "tortoise")
 Sigmasq = tortoise_fit$sigmasq
@@ -68,20 +158,18 @@ p2 <- Gopher %>% filter(term == "prev")%>%select("estimate") %>%
   geom_density()+    #add density curve
   ggtitle("histogram of prev")+
   geom_vline(xintercept = tortoise_fit$beta[2], colour="green") #true mean
-p2
 
 q2 <- Gopher %>% filter(term == "prev")%>%select("estimate") %>%
   ggplot(aes(sample=estimate)) +
   geom_qq() +
   geom_qq_line()+
   labs(title="QQ plot of prev")
-q2
 ```
 Histogram with density function,and true mean 
 1. parameter normality holds.
-2. the true mean(green line) is approximate at the center.
+2. the true mean(green line) is approximate at the center（right a litlle bit).
 QQ plot
-1. parameter normality holds since most of the data are around the line patter even there are some outliers.
+1. parameter normality holds since most of the data are around the line patter even there are two outliers.
 
 ```{r}
 #put two plots togther
@@ -97,14 +185,12 @@ p3 <- Gopher %>% filter(term == "factor(year)2005")%>%select("estimate") %>%
   geom_density()+     #add density curve
   ggtitle("histogram of factor(year)2005")+
   geom_vline(xintercept = tortoise_fit$beta[3], colour="green")  #true mean
-p3
 
 q3 <- Gopher %>% filter(term == "factor(year)2005")%>%select("estimate") %>%
   ggplot(aes(sample=estimate)) +
   geom_qq() +
   geom_qq_line()+
   labs(title=" QQ plot of factor(year)2005")
-q3
 ```
 Histogram with density function,and true mean 
 1. parameter normality holds.
@@ -128,21 +214,18 @@ p4 <- Gopher %>% filter(term == "factor(year)2006")%>%select("estimate") %>%
   geom_density()+     #add density curve
   ggtitle("histogram of factor(year)2006")+
   geom_vline(xintercept = tortoise_fit$beta[4], colour="green")  #true mean
-p4
 
 q4<- Gopher %>% filter(term == "factor(year)2006")%>%select("estimate") %>%
   ggplot(aes(sample=estimate)) +
   geom_qq() +
   geom_qq_line()+
   labs(title=" QQ plot of factor(year)2006")
-q4
 ```
 Histogram with density function,and true mean 
 1. parameter normality holds.
-2. the true mean(green line) is approximate at the center.
-
+2. the true mean(green line) is approximate at the center(left a little bit).
 QQ plot
-1. parameter normality holds since most of the data are around the line patter even there are some outliers.
+1. parameter normality holds since most of the data are around the line patter.
 
 ```{r}
 #put two plots togther
@@ -160,13 +243,11 @@ p5 <- Gopher %>% filter(term == "sd__(Intercept)")%>%select("estimate") %>%
   geom_density()+  #add density curve
   ggtitle("histogram of sd__(Intercept)")+
   geom_vline(xintercept =tortoise_fit$sigmasq, colour="green")   #true mean
-p5
 q5<- Gopher %>% filter(term == "sd__(Intercept)")%>%select("estimate") %>%
   ggplot(aes(sample=estimate)) +
   geom_qq() +
   geom_qq_line()+
   labs(title=" QQ plot of sd__(Intercept)")
-q5
 ```
 Histogram with density function and qq plot
 1. sigmasq is 0. 
@@ -176,6 +257,91 @@ Histogram with density function and qq plot
 library(patchwork)
 p5+q5
 ```
+
+
+# Summary output for functions 
+
+# Estimation function
+
+
+```{r}
+tortoise_fit = run_model(tortoise, example = "tortoise")
+tortoise_fit
+```
+
+
+The estimation function is performed with the function `Estimation_functions`. As above, this function returns the value of coefficients, sigma square, test statistics, and so on. Those three return values are important because they will be used in the bootstrap, computing the point estimates, confidence interval and p-value. Besides, those three parts will also be used in the hypothesis test to check if predictor is significant. In the return values, the values of coefficients and test statistics can be used in building hypothesis test. however, as we noticed that sigma square is equal to zero. Since random effects are iid normal distribution, then, sigma square can be used for random effects $z_i$. Even though sigma square is zero, but it does not have huge influence on the GLM and Poisson model.
+
+
+# algorithem and steps of Bootstrap
+
+```{r}
+Gopher = para_bootstrap(100,tortoise, tortoise_fit$beta[2])
+Gopher
+```
+
+
+Parametric bootstrap function is performed with the function `para_bootstrap`. As above, the function construct a bootstrap including estimates, standard error, statistic, and p-value giving parameters B, data set, and para. The basic principle of this function is creating a bootstrap based on known distribution. The main steps for bootstrapping are introducing below: one is re-sampling the different ransom effects for each site i times the iteration B, while the same random effects $z_i$ between each year. Then, we will get B groups of different $Z_i$, and every group contains 30 random effects $z_i$. secondly, fitting the GLMM model with random effects to compute $\hat{\mu}_i$. As we known that $\mu$ is the parameter of Poisson distribution, so the last part of bootstrap is generating $Y_{ij}$ based on B groups. Noting that the sample size of original data is not be matched with the random effects as we use `mutate()` function to add random effects into the date set, so the way to combine them together is replicating the the size of data set B times. Therefore, after we calculate $\hat{Y}_{ij}$, we can use the `glmer()` function to build a bootstrap, which will be used later to calculate standard error and confidence interval.   
+
+
+# example of Bootstrap: computing point estimates, standard errors, and confidence intervals.
+
+```{r}
+Gopher = para_bootstrap(100,tortoise, tortoise_fit$beta[2])
+Gopher %>% filter(term == "prev") %>% summarize(SD = sd(estimate),Lower95 = quantile(estimate, .025),
+                                                Upper95 = quantile(estimate,.975))
+```
+
+The resulting confidence interval is [0.01196051, 0.02856554], and the standard error is 0.004293865. 
+
+# Hypothesis test
+
+# Sampling distribution of slope given null hypothesis
+
+
+```{r}
+t_value = tortoise_fit$test_stat["prev"]
+gopher = para_bootstrap(100,tortoise, 0)
+gopher %>%
+  filter(term == "prev") %>%
+  ggplot(aes(x = statistic)) +
+  geom_density() + 
+  geom_vline(xintercept = t_value, col = "red") +
+  ylab("Bootstrap Sampling Distribution (Null)") +
+  xlab("Slope")
+```
+
+This plot is based on the hypothesis test. The hypothesis test is:\\
+        $H_0: \beta_1 = 0$\\
+        $H_1: \beta_1 \neq 0$\\
+        We need to test if $\beta_1$ is significant or not. Under null hypothesis, we compute the bootstrap without $\beta_1$ and predictor, prev, and use this bootstrap to do the hypothesis, and then plot the density function. As we can see from the plot, the distribution seems like the t distribution. Besides, the red line in the plot represents the t critical value. We can also get the reject region based on the red line. From the plot, we can see that none of the t values are smaller than the critical value, so we fail to reject the null hypothesis, which means the alternative test is false. Therefore, 
+
+
+# hypothesis test: computing P-value 
+
+```{r}
+## Hypothesis test.
+t_value = tortoise_fit$test_stat["prev"]
+gopher = para_bootstrap(100,tortoise, 0)
+p = gopher %>% filter(term == "prev") %>% summarize(p = mean(abs(statistic) > abs(t_value)))
+p
+```
+
+We compute hypothesis test under null hypothesis using bootstrap. The basic idea is that computing bootstrap without the predictor "prev", indicating that the coefficient of "prev" is zero. After doing bootstrap, we can compute the p-value based on statistic, which is in bootstrap, and also t critical value. As we noticed from the output, p-value is zero, which is way smaller than 0.05, there are strong evidence against null hypothesis. So, the coefficient of "prev" predictor is significant. Thus, the increasing seroprevalance affects the number of dead tortoise after counting for the area of each site.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
