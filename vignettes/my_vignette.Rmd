@@ -22,68 +22,68 @@ library(ggplot2)
 # Load data
 tortoise <- read.csv("~/Desktop/Asc/PGLMM/R/gopher_tortoise.csv")
 
-# scatter Plot relationship between shells and prev
-plot_p <- tortoise %>%
+# scatter Plot: relationship between shells and prev
+s1 <- tortoise %>%
   ggplot(aes(x = prev,y=shells)) +
   geom_point()+
   geom_smooth(method=lm)
-# scatter Plot relationship between shells and year
-plot_y <- tortoise %>%
+# scatter Plot: relationship between shells and year
+s2 <- tortoise %>%
   ggplot(aes(x = year,y=shells)) +
   geom_point()+
   geom_smooth(method=lm)
 
 ```
 
-
 ```{r}
-## QQ-plot
-p1 <- tortoise %>%
-  ggplot(aes(sample = prev)) +
-  geom_qq() +
-  geom_qq_line()
-p2 <- tortoise %>%
-  ggplot(aes(sample = year)) +
-  geom_qq() +
-  geom_qq_line()
+#put two plots togther
+library(patchwork)
+s1+s2
 ```
+1. There is a positive relationship between parameter prev and response shells. As prev increases, the number of shell will also increases. 
+2.it seems there is no clear relatioonship between the parameter year and response shells.
 
 
 ```{r}
 #histogram of prev
-p4<- tortoise %>%
-  ggplot(aes(x = prev)) +
-  geom_histogram(aes(y = ..density..),binwidth = 10)+ 
-  geom_density()
+h1<- tortoise %>%
+  ggplot(aes(x = prev,y = ..density..)) +
+  geom_histogram(binwidth = 10) + 
+  geom_density()+#add density curve
+  ggtitle("histogram of prev")#add title
 
-p5 <- tortoise %>%
-  ggplot(aes(x = year)) +
-  geom_histogram(binwidth = 10)
-
+h1
 ```
-
+1. there is a decreasing density curve for prev.
+2. the distribution is skewed too the right and unimodal. 
 
 ```{r}
 #boxplot of year
 b1 <- ggplot(tortoise, aes(as.factor(year), y=shells,color=year)) + 
   geom_boxplot()+
   xlab("Year")+
-  ylab("number of shells")
+  ylab("number of shells")+
+  ggtitle("Boxplot of year")#add title
+b1
 
-b2 <- ggplot(tortoise, aes(x=prev)) + 
-  geom_density()
+b2 <- ggplot(tortoise, aes(x=prev, y=shells,group=2)) + 
+  geom_boxplot()+
+  xlab("prev")+
+  ylab("number of shells")+
+  ggtitle("Boxplot of year")#add title
+b2
 ```
+for pamater year
+1. year 2004 has a more dispersed the data than year 2005 and 2006.
+2. they have same median.the median is the upper quantile for year 2005. the median is the lower quantile for year 2006.
+3. the boxplot of year 2004 is skewed right. 
+for pamater prev
+1. the boxplot of prev is skewed right. 
+
 
 
 ```{r}
-```
-
-
-
-
-```{r}
-#library(PGLMM)
-library(tidyverse)
+#plot of estimation from bootsrap function
 # Load data
 ## return for bootstrap
 Gopher = para_bootstrap(100,tortoise, tortoise_fit$beta[2])
