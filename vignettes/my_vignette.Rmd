@@ -15,6 +15,7 @@ knitr::opts_chunk$set(
 ```
 
 
+
 ```{r}
 #library(PGLMM)
 library(tidyverse)
@@ -175,9 +176,6 @@ Histogram with density function and qq plot
 library(patchwork)
 p5+q5
 ```
-
-
-
 
 
 
