@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 
 # Introduction
-The functions in this package provides methods to determine the relationship between predictor and response in GLMM, where the the distribution of the response variable is Possion distribution. The parapmeter in the Poisson distribution, $\mu_{i}$, is an invertible function of the linear predictor. This is called the link function. Besides, the linear predictor is a linear combination of fixed effects and random effects, which is the latten variables. The basic idea of this projet is implementing maximum likelihood function containing computing the point estimates, standard errors, and confidence intervals. Therefore, in order to figure out the relationship between the response and predictors, two basic algorithm functions will be computed in this R package, which are Estimation_functions and para_bootstrap. Each functions requie different arguments:
+The functions in this package provides methods to determine the relationship between predictor and response in GLMM, where the the distribution of the response variable is Poisson distribution. The parameter in the Poisson distribution, $\mu_{i}$, is an invertible function of the linear predictor. This is called the link function. Besides, the linear predictor is a linear combination of fixed effects and random effects, which is the latten variables. The basic idea of this projet is implementing maximum likelihood function containing computing the point estimates, standard errors, and confidence intervals. Therefore, in order to figure out the relationship between the response and predictors, two basic algorithm functions will be computed in this R package, which are Estimation_functions and para_bootstrap. Each functions requie different arguments:
   Estimation_functions:
 - `data` -- the data set for my own sample. In this project, the data set is "gopher_tortoise" which follows Poisson distribution
 - `example` -- example the name of my own example, which is "tortoise". "tortoise" is the name of data set in coding.
@@ -32,7 +32,11 @@ This function returns bootstrap, including the estimator of $\beta_$, statistic,
 
 To use the package we need to load it into our `R` session. The examples in this vignette also use functions from the `tidyverse` package, and also `broom.mixed` package, though this is not necessary for general use of our package.
 
+# load PGLMM package into the vignette
 
+```{r}
+library(PGLMM)
+```
 
 
 ```{r}
@@ -167,7 +171,7 @@ q2 <- Gopher %>% filter(term == "prev")%>%select("estimate") %>%
 ```
 Histogram with density function,and true mean 
 1. parameter normality holds.
-2. the true mean(green line) is approximate at the center（right a litlle bit).
+2. the true mean(green line) is approximate at the center（right a little bit).
 QQ plot
 1. parameter normality holds since most of the data are around the line patter even there are two outliers.
 
@@ -296,26 +300,6 @@ The resulting confidence interval is [0.01196051, 0.02856554], and the standard 
 
 # Hypothesis test
 
-# Sampling distribution of slope given null hypothesis
-
-
-```{r}
-t_value = tortoise_fit$test_stat["prev"]
-gopher = para_bootstrap(100,tortoise, 0)
-gopher %>%
-  filter(term == "prev") %>%
-  ggplot(aes(x = statistic)) +
-  geom_density() + 
-  geom_vline(xintercept = t_value, col = "red") +
-  ylab("Bootstrap Sampling Distribution (Null)") +
-  xlab("Slope")
-```
-
-This plot is based on the hypothesis test. The hypothesis test is:\\
-        $H_0: \beta_1 = 0$\\
-        $H_1: \beta_1 \neq 0$\\
-        We need to test if $\beta_1$ is significant or not. Under null hypothesis, we compute the bootstrap without $\beta_1$ and predictor, prev, and use this bootstrap to do the hypothesis, and then plot the density function. As we can see from the plot, the distribution seems like the t distribution. Besides, the red line in the plot represents the t critical value. We can also get the reject region based on the red line. From the plot, we can see that none of the t values are smaller than the critical value, so we fail to reject the null hypothesis, which means the alternative test is false. Therefore, 
-
 
 # hypothesis test: computing P-value 
 
@@ -327,6 +311,10 @@ p = gopher %>% filter(term == "prev") %>% summarize(p = mean(abs(statistic) > ab
 p
 ```
 
+
+The hypothesis test:
+        $H_0: \beta_1 = 0$
+        $H_1: \beta_1 \neq 0$
 We compute hypothesis test under null hypothesis using bootstrap. The basic idea is that computing bootstrap without the predictor "prev", indicating that the coefficient of "prev" is zero. After doing bootstrap, we can compute the p-value based on statistic, which is in bootstrap, and also t critical value. As we noticed from the output, p-value is zero, which is way smaller than 0.05, there are strong evidence against null hypothesis. So, the coefficient of "prev" predictor is significant. Thus, the increasing seroprevalance affects the number of dead tortoise after counting for the area of each site.
 
 
