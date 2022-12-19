@@ -19,7 +19,7 @@ para_bootstrap <- function(B, Dataset, para){
   ## Generate B times of Y_ij from poisson model, and then refit the model to obtain parametric bootstrapped estimates.
   Dataset_new = Dataset1 %>% slice(rep(1:30,B))%>% mutate(B = rep(1:B,each = 30)) %>% mutate(mu_i_hat = mu_i_hat) %>% mutate(Y_hat = rpois(n(), mu_i_hat))
   Bootstrap1 = Dataset_new %>% group_by(B) %>% summarise(tidy(glmer(Y_hat~prev + offset(log(Area))+factor(year)+(1|Site),
-                                                                    family = poihsson)), .groups = "drop")
+                                                                    family = poisson)), .groups = "drop")
 
   return(Bootstrap1)
 }
