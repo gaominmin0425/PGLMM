@@ -9,8 +9,8 @@ library(tidyverse)
 #' @return return the bootstrap which contains B, effect, group. term, estimates, standard error, statistic, and p-value.
 #' @export
 #' @importFrom dplyr group_by mutate summarize filter slice %>%
-#'  @importFrom tibble tibble
-#'  @importFrom  lme4 glmer lmer
+#' @importFrom tibble tibble
+#' @importFrom  lme4 glmer lmer
 #' @examples
 #' ## choosing different B into the para_bootstrap function
 #'para_bootstrap(100. tortoise, tortoise_fit$beta[2])
