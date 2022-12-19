@@ -41,11 +41,11 @@ library(PGLMM)
 
 ```{r}
 #library(PGLMM)
-library(sass)
+#library(sass)
 library(tidyverse)
 library(ggplot2)
 # Load data
-tortoise <- read.csv("~/Desktop/Asc/PGLMM/R/gopher_tortoise.csv")
+tortoise <- read.csv("gopher_tortoise.csv")
 #summary the datatset
 summary(tortoise)
 ```
@@ -114,18 +114,25 @@ For parameter prev
 
 
 ```{r}
-#plot of estimation from bootsrap function
+
+```
+
+
+```{r}
+#plot of estimation from bootstrap function
 # Load data
 ## return for bootstrap
+tortoise_fit <- run_model(tortoise, "tortoise")
 Gopher = para_bootstrap(100,tortoise, tortoise_fit$beta[2])
 ## For plots
 tortoise = tortoise %>% mutate(Year2005 = ifelse(tortoise$year == "2005",1,0), Year2006 = ifelse(tortoise$year=="2006", 1,0))
-tortoise_fit <- run_model(tortoise, "tortoise")
 Sigmasq = tortoise_fit$sigmasq
 ## compute bootstrap standard error and confidence interval in terms of prev
 Gopher %>% filter(term == "prev") %>% summarize(SD = sd(estimate),Lower95 = quantile(estimate, .025),Upper95 = quantile(estimate,.975))
+```
 
 
+```{r}
 #histogram 
 #data of intercept
 p1 <- Gopher %>% filter(term == "(Intercept)")%>%select("estimate") %>%
@@ -135,7 +142,7 @@ p1 <- Gopher %>% filter(term == "(Intercept)")%>%select("estimate") %>%
   ggtitle("histogram of intercept")+
   geom_vline(xintercept = tortoise_fit$beta[1], colour="green")  #true mean
 p1
-library(ggplot2)
+
 q1<- Gopher %>% filter(term == "(Intercept)")%>%select("estimate") %>%
   ggplot(aes(sample=estimate)) +
   geom_qq() +

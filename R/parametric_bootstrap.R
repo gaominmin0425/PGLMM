@@ -8,19 +8,25 @@ library(tidyverse)
 #'
 #' @return return the bootstrap which contains B, effect, group. term, estimates, standard error, statistic, and p-value.
 #' @export
-#' @importFrom dplyr group_by mutate summarize filter slice %>%
+#' @importFrom dplyr group_by mutate summarise filter slice %>% n
 #' @importFrom tibble tibble
-#' @importFrom  lme4 glmer lmer
+#' @importFrom  lme4 ranef glmer lmer
+#' @importFrom broom.mixed tidy
 #' @examples
 #' ## choosing different B into the para_bootstrap function
-#'para_bootstrap(100. tortoise, tortoise_fit$beta[2])
-#'tortoise_fit$beta[2] indicates the coefficient of "prev" in fitted GLMM model of "tortoise" data set.
+#' data(tortoise)
+#' tortoise_fit = run_model(tortoise, "tortoise")
+#' para_bootstrap(100, tortoise, tortoise_fit$beta[2])
 #' @example
-#'para_bootstrap(1000, tortoise, tortoise_fit$beta[2])
-#'generating B = 1000
+#' data(tortoise)
+#' tortoise_fit = run_model(tortoise, "tortoise")
+#' para_bootstrap(1000, tortoise, tortoise_fit$beta[2])
+#' #generating B = 1000
 #' @example
+#' data(tortoise)
+#' tortoise_fit = run_model(tortoise, "tortoise")
 #' para_bootstrap(10000, tortoise, tortoise_fit$beta[2])
-#' generating B = 10000
+#' #generating B = 10000
 
 para_bootstrap <- function(B, Dataset, para){
   n = nrow(Dataset) ## length of the date set, which is the sample size of the data set.
