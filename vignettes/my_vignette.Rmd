@@ -18,6 +18,72 @@ knitr::opts_chunk$set(
 ```{r}
 #library(PGLMM)
 library(tidyverse)
+library(ggplot2)
+# Load data
+tortoise <- read.csv("~/Desktop/Asc/PGLMM/R/gopher_tortoise.csv")
+
+# scatter Plot relationship between shells and prev
+plot_p <- tortoise %>%
+  ggplot(aes(x = prev,y=shells)) +
+  geom_point()+
+  geom_smooth(method=lm)
+# scatter Plot relationship between shells and year
+plot_y <- tortoise %>%
+  ggplot(aes(x = year,y=shells)) +
+  geom_point()+
+  geom_smooth(method=lm)
+
+```
+
+
+```{r}
+## QQ-plot
+p1 <- tortoise %>%
+  ggplot(aes(sample = prev)) +
+  geom_qq() +
+  geom_qq_line()
+p2 <- tortoise %>%
+  ggplot(aes(sample = year)) +
+  geom_qq() +
+  geom_qq_line()
+```
+
+
+```{r}
+#histogram of prev
+p4<- tortoise %>%
+  ggplot(aes(x = prev)) +
+  geom_histogram(aes(y = ..density..),binwidth = 10)+ 
+  geom_density()
+
+p5 <- tortoise %>%
+  ggplot(aes(x = year)) +
+  geom_histogram(binwidth = 10)
+
+```
+
+
+```{r}
+#boxplot of year
+b1 <- ggplot(tortoise, aes(as.factor(year), y=shells,color=year)) + 
+  geom_boxplot()+
+  xlab("Year")+
+  ylab("number of shells")
+
+b2 <- ggplot(tortoise, aes(x=prev)) + 
+  geom_density()
+```
+
+
+```{r}
+```
+
+
+
+
+```{r}
+#library(PGLMM)
+library(tidyverse)
 # Load data
 ## return for bootstrap
 Gopher = para_bootstrap(100,tortoise, tortoise_fit$beta[2])
