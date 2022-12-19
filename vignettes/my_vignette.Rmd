@@ -31,14 +31,6 @@ p1 <- gopher %>% filter(term == "(Intercept)")%>%select("estimate") %>%
   geom_vline(xintercept = tortoise_fit$beta[1], colour="green")  #true mean
 p1
 library(ggplot2)
-# boxplot
-b1 <- gopher %>% filter(term == "(Intercept)")%>%select("estimate") %>%
-  ggplot(aes(x=estimate))+ 
-  geom_boxplot()+
-  xlab("Year")+
-  ylab("number of shells")+
-  labs(title="boxplot of Intercept")
-b1
 q1<- gopher %>% filter(term == "(Intercept)")%>%select("estimate") %>%
   ggplot(aes(sample=estimate)) +
   geom_qq() +
@@ -49,14 +41,12 @@ q1
 Histogram with density function,and true mean 
 1. parameter normality holds.
 2. the true mean(green line) is approximate at the center.
-Boxplot
-1. It kindly follows normal distribution since it is symmetric.
 QQ plot
 1. parameter normality holds since most of the data are around the line patter even there are some outliers.
 ```{r}
-#put three plots togther
+#put two plots togther
 library(patchwork)
-p1+b1+q1
+p1+q1
 ```
 
 
@@ -69,13 +59,7 @@ p2 <- gopher %>% filter(term == "prev")%>%select("estimate") %>%
   ggtitle("histogram of prev")+
   geom_vline(xintercept = tortoise_fit$beta[2], colour="green") #true mean
 p2
-b2 <- gopher %>% filter(term == "prev")%>%select("estimate") %>%
-  ggplot(aes(x = estimate)) +
-  geom_boxplot()+
-  xlab("prev")+
-  ylab("number of shells")+
-  labs(title="boxplot of prev")
-b2
+
 q2 <- gopher %>% filter(term == "prev")%>%select("estimate") %>%
   ggplot(aes(sample=estimate)) +
   geom_qq() +
@@ -86,15 +70,13 @@ q2
 Histogram with density function,and true mean 
 1. parameter normality holds.
 2. the true mean(green line) is approximate at the center.
-Boxplot
-1. It kindly follows normal distribution since it is symmetric.
 QQ plot
 1. parameter normality holds since most of the data are around the line patter even there are some outliers.
 
 ```{r}
-#put three plots togther
+#put two plots togther
 library(patchwork)
-p2+b2+q2
+p2+q2
 ```
 
 ```{r}
@@ -106,13 +88,7 @@ p3 <- gopher %>% filter(term == "factor(year)2005")%>%select("estimate") %>%
   ggtitle("histogram of factor(year)2005")+
   geom_vline(xintercept = tortoise_fit$beta[3], colour="green")  #true mean
 p3
-b3 <- gopher %>% filter(term == "factor(year)2005")%>%select("estimate") %>%
-  ggplot(aes(x = estimate)) +
-  geom_boxplot()+
-  xlab("factor(year)2005")+
-  ylab("number of shells")+
-  labs(title="boxplot of factor(year)2005")
-b3
+
 q3 <- gopher %>% filter(term == "factor(year)2005")%>%select("estimate") %>%
   ggplot(aes(sample=estimate)) +
   geom_qq() +
@@ -123,15 +99,14 @@ q3
 Histogram with density function,and true mean 
 1. parameter normality holds.
 2. the true mean(green line) is approximate at the center(left side a lit).
-Boxplot
-1. It kindly follows normal distribution since it is symmetric.
+
 QQ plot
 1.parameter normality holds since most of the data are around the line patter even there are some outliers.
 
 ```{r}
 #put three plots togther
 library(patchwork)
-p3+b3+q3
+p3+q3
 ```
 
 
@@ -144,13 +119,7 @@ p4 <- gopher %>% filter(term == "factor(year)2006")%>%select("estimate") %>%
   ggtitle("histogram of factor(year)2006")+
   geom_vline(xintercept = tortoise_fit$beta[4], colour="green")  #true mean
 p4
-b4 <- gopher %>% filter(term == "factor(year)2006")%>%select("estimate") %>%
-  ggplot(aes(x = estimate)) +
-  geom_boxplot()+
-  xlab("factor(year)2006")+
-  ylab("number of shells")+
-  labs(title="boxplot of factor(year)2006")
-b4
+
 q4<- gopher %>% filter(term == "factor(year)2006")%>%select("estimate") %>%
   ggplot(aes(sample=estimate)) +
   geom_qq() +
@@ -161,15 +130,14 @@ q4
 Histogram with density function,and true mean 
 1. parameter normality holds.
 2. the true mean(green line) is approximate at the center.
-Boxplot
-1. It kindly follows normal distribution since it is symmetric.
+
 QQ plot
 1. parameter normality holds since most of the data are around the line patter even there are some outliers.
 
 ```{r}
 #put three plots togther
 library(patchwork)
-p4+b4+q4
+p4+q4
 ```
 
 
@@ -183,8 +151,14 @@ p5 <- gopher %>% filter(term == "sd__(Intercept)")%>%select("estimate") %>%
   ggtitle("histogram of sd__(Intercept)")+
   geom_vline(xintercept =tortoise_fit$sigmasq, colour="green")   #true mean
 p5
+q5<- gopher %>% filter(term == "sd__(Intercept)")%>%select("estimate") %>%
+  ggplot(aes(sample=estimate)) +
+  geom_qq() +
+  geom_qq_line()+
+  labs(title=" QQ plot of sd__(Intercept)")
+q5
 ```
-Histogram with density function 
+Histogram with density function and qq plot
 1. sigmasq is 0. 
 
 
