@@ -16,15 +16,15 @@ knitr::opts_chunk$set(
 
 
 # Introduction
-The functions in this package provides methods to determine the relationship between predictor and response in GLMM, where the the distribution of the response variable is Poisson distribution. The parameter in the Poisson distribution, $\mu_{i}$, is an invertible function of the linear predictor. This is called the link function. Besides, the linear predictor is a linear combination of fixed effects and random effects, which is the latten variables. The basic idea of this projet is implementing maximum likelihood function containing computing the point estimates, standard errors, and confidence intervals. Therefore, in order to figure out the relationship between the response and predictors, two basic algorithm functions will be computed in this R package, which are Estimation_functions and para_bootstrap. Each functions requie different arguments:
+The functions in this package provide methods to determine the relationship between predictor and response in GLMM, where we assume that the response variable follows Poisson distribution. The parameter in the Poisson distribution, $\mu_{i}$, is an invertible function of the linear predictor. This is called the link function. Besides, the linear predictor is a linear combination of fixed effects and random effects, which is the latent variables. The basic idea of this project is implementing maximum likelihood function containing computing the point estimates, standard errors, and confidence intervals. Therefore, in order to figure out the relationship between the response and predictors, two basic algorithm functions will be computed in this R package, which are Estimation_functions and para_bootstrap. Each functions requie different arguments:
   Estimation_functions:
 - `data` -- the data set for my own sample. In this project, the data set is "gopher_tortoise" which follows Poisson distribution
 - `example` -- example the name of my own example, which is "tortoise". "tortoise" is the name of data set in coding.
 
-The function returns a list of summary statstics in fitted model such as coefficients, sigma square, test statistics, and also convergence.
+The function returns a list of summary statistics in fitted model such as coefficients, sigma square, test statistics, and also convergence.
 
   para_bootstrap:
-- `B` -- B is the iteration of generating reponse data like $Y_{ij}$ in Possion GLMM.
+- `B` -- B is the iteration of generating response data like $Y_{ij}$ in Possion GLMM.
 - `Dataset` -- Data set for my own example, which is "tortoise"
 - `para` -- representing the value of coefficient of the specific predictor that interested in the project. In "tortoise" data set, the interested predictor is "prev". There are two options for para: one is tortoise_fit$beta[2] for coefficient of "prev", another is 0 for hypothesis test.
 
@@ -285,7 +285,7 @@ Gopher
 ```
 
 
-Parametric bootstrap function is performed with the function `para_bootstrap`. As above, the function construct a bootstrap including estimates, standard error, statistic, and p-value giving parameters B, data set, and para. The basic principle of this function is creating a bootstrap based on known distribution. The main steps for bootstrapping are introducing below: one is re-sampling the different ransom effects for each site i times the iteration B, while the same random effects $z_i$ between each year. Then, we will get B groups of different $Z_i$, and every group contains 30 random effects $z_i$. secondly, fitting the GLMM model with random effects to compute $\hat{\mu}_i$. As we known that $\mu$ is the parameter of Poisson distribution, so the last part of bootstrap is generating $Y_{ij}$ based on B groups. Noting that the sample size of original data is not be matched with the random effects as we use `mutate()` function to add random effects into the date set, so the way to combine them together is replicating the the size of data set B times. Therefore, after we calculate $\hat{Y}_{ij}$, we can use the `glmer()` function to build a bootstrap, which will be used later to calculate standard error and confidence interval.   
+Parametric bootstrap function is performed with the function `para_bootstrap`. As above, the function constructs a bootstrap including estimates, standard error, statistic, and p-value given parameters B, data set, and para. The basic principle of this function is creating a bootstrap based on known distribution. The main steps for bootstrapping are introduced below: we first re-sample the different random effects at each site i for B times, but the random effects $z_i$ in different year are the same. Then, we will get B groups of different $Z_i$, and every group contains 30 random effects $z_i$. Thirdly, we fit the GLMM model with random effects to compute $\hat{\mu}_i$. As we know, $\mu$ is the parameter of Poisson distribution, so the last part of bootstrap is generating $Y_{ij}$ based on B groups. Note that the sample size of original data is not matched with the random effects as we use `mutate()` function to add random effects into the date set, so the way to combine them together is replicating the the size of data set B times. Therefore, after we calculate $\hat{Y}_{ij}$, we can use the `glmer()` function to build a bootstrap, which will be used later to calculate standard error and confidence interval.   
 
 
 # example of Bootstrap: computing point estimates, standard errors, and confidence intervals.
@@ -315,7 +315,7 @@ p
 The hypothesis test:
         $H_0: \beta_1 = 0$
         $H_1: \beta_1 \neq 0$
-We compute hypothesis test under null hypothesis using bootstrap. The basic idea is that computing bootstrap without the predictor "prev", indicating that the coefficient of "prev" is zero. After doing bootstrap, we can compute the p-value based on statistic, which is in bootstrap, and also t critical value. As we noticed from the output, p-value is zero, which is way smaller than 0.05, there are strong evidence against null hypothesis. So, the coefficient of "prev" predictor is significant. Thus, the increasing seroprevalance affects the number of dead tortoise after counting for the area of each site.
+We compute hypothesis test under null hypothesis using bootstrap. The basic idea is that computing bootstrap without the predictor "prev", the result indicates that the coefficient of "prev" is zero. After doing bootstrap, we can compute the p-value based on statistic, which is in bootstrap, and also t critical value. As we noticed from the output, p-value is zero, which is way smaller than 0.05, there are strong evidence against null hypothesis. So, the coefficient of "prev" predictor is significant. Thus, increasing seroprevalance affects the number of dead tortoise after counting for the area of each site.
 
 
 
