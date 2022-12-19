@@ -104,7 +104,7 @@ QQ plot
 1.parameter normality holds since most of the data are around the line patter even there are some outliers.
 
 ```{r}
-#put three plots togther
+#put two plots togther
 library(patchwork)
 p3+q3
 ```
@@ -135,7 +135,7 @@ QQ plot
 1. parameter normality holds since most of the data are around the line patter even there are some outliers.
 
 ```{r}
-#put three plots togther
+#put two plots togther
 library(patchwork)
 p4+q4
 ```
@@ -161,6 +161,11 @@ q5
 Histogram with density function and qq plot
 1. sigmasq is 0. 
 
+```{r}
+#put two plots togther
+library(patchwork)
+p5+q5
+```
 
 
 
