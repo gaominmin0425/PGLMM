@@ -1,5 +1,5 @@
 Package: PGLMM
-Title: 
+Title: Data analysis in the framework of GLMM using Poisson distribution
 Version: 0.0.0.9000
 Authors@R: 
     person("Ruimin&Jingyi", "Gao&Liu", , "ruimingao0425@gmail.com&jliu2388@uwo.ca", role = c("aut", "cre"))
